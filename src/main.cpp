@@ -4,7 +4,6 @@
 #include <signal.h>
 #include "../inc/header.hpp"
 #include "mash.cpp"
-#include "../inc/base64.hpp"
 #include "file.cpp"
 
 using namespace std;
@@ -13,6 +12,20 @@ static bool run;
 
 void IntSig(int signum){
     run = false;
+}
+
+string string_to_hex(const string& input)
+{
+    static const char hex_digits[] = "0123456789ABCDEF";
+
+    string output;
+    output.reserve(input.length() * 2);
+    for (unsigned char c : input)
+    {
+        output.push_back(hex_digits[c >> 4]);
+        output.push_back(hex_digits[c & 15]);
+    }
+    return output;
 }
 
 int main(int argc, char* argv[]) {
@@ -42,19 +55,6 @@ int main(int argc, char* argv[]) {
 
     mash -> rand_seed();
 
-    macaron::Base64* b64c;
-    b64c = new macaron::Base64;
-    if (b64c == nullptr){
-        cout << memerr; 
-        exit(1);
-    }
-
-    string* b64 = new string;
-    if (b64 == nullptr){
-        cout << memerr; 
-        exit(1);
-    }
-
     string output;
 
     run = true;
@@ -63,8 +63,8 @@ int main(int argc, char* argv[]) {
 
     while (run){
         output = mash -> mash(chunks);
-        *b64 = b64c -> Encode(output);
-        cout << *b64 << endl;
+        output = string_to_hex(output);
+        cout << output << endl;
         usleep(500 * 1000);
     }
 
@@ -72,8 +72,6 @@ int main(int argc, char* argv[]) {
 
     delete mash;
     delete[] chunks;
-    delete b64c;
-    delete b64;
     
     return 0;
 }

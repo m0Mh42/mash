@@ -101,6 +101,7 @@ string Mash::xor_random(string chunk){
 string Mash::xor_chunks(string chunk1, string chunk2){
     for (int i = 0; i < 32; i++){
         chunk1[i] = chunk1[i] ^ chunk2[i];
+        chunk1[i] = chunk1[i] ^ chunk2[i];
     }
     return chunk1;
 }
