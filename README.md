@@ -1,6 +1,7 @@
 # Mash
 
-This is my mashing algorithm app. Gets an input (file, or stdin), and outs a mashed input (in a file or stdout).
+### 256-bit Mashing Algorithm.
+very gut.
 
 ```shell
 ./mash [input file]
