@@ -2,7 +2,6 @@
 
 ### 256-bit Mashing Algorithm.
 very gut.
-(Literally a fork bomb)
 
 ```shell
 ./mash [input file]
