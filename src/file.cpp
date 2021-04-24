@@ -3,29 +3,21 @@
 
 using namespace std;
 
-static int i;
 
-string* Readfile(const string filename){
+string Readfile(const string filename){
     ifstream file;
-    string* buffer;
-    buffer = new string[1024 * 1024 * 10];
-    string* line;
-    line = new string;
-    i = 0;
-    
+    string* buffer = new string;
+    string *line = new string;
     file.open(filename, ios::in | ios::binary);
 
     if (file.is_open()){
         while(getline(file, *line)){
-            *(buffer + i) = *line;
-            i++;
+            buffer->append(*line);
+            buffer->push_back('\n');
         }
     }
+
+    return *buffer;
     
-    return buffer;
 }
 
-int GetLineLen() {
-    // static int i;
-    return i;
-}
