@@ -4,7 +4,6 @@
 #include <signal.h>
 #include "../inc/header.hpp"
 #include "mash.cpp"
-#include "memcheck.cpp"
 #include "../inc/base64.hpp"
 #include "file.cpp"
 
