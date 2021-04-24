@@ -32,11 +32,13 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    string* output = new string;
-    if (output == nullptr){
+    string* chunks = mash->chunkdata(data);
+    if (chunks == nullptr){
         cout << memerr; 
         exit(1);
     }
+
+    delete data;
 
     mash -> rand_seed();
 
@@ -53,13 +55,15 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+    string output;
+
     run = true;
 
     signal(SIGINT, IntSig);
 
     while (run){
-        *output = mash -> mash(*data);
-        *b64 = b64c -> Encode(*output);
+        output = mash -> mash(chunks);
+        *b64 = b64c -> Encode(output);
         cout << *b64 << endl;
         usleep(500 * 1000);
     }
@@ -67,8 +71,7 @@ int main(int argc, char* argv[]) {
     cout << endl << "Exiting..." << endl;
 
     delete mash;
-    delete data;
-    delete output;
+    delete[] chunks;
     delete b64c;
     delete b64;
     
