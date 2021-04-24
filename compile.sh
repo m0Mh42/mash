@@ -1,4 +1,4 @@
 #!/bin/sh
 
-gcc main.cpp -lstdc++ -o ../bin/mash
+gcc ./src/main.cpp -lstdc++ -o ../bin/mash
 echo "Done"
