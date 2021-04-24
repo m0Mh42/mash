@@ -7,7 +7,7 @@ using namespace std;
 class Mash {
     public:
         string mash(string &input);
-        void reset_seed();
+        void rand_seed();
     private:
         void rand_c_generator(void);
         string xor_chunks(string chunk1, string chunk2);
@@ -30,12 +30,12 @@ string Mash::mash(string &input){
         }
     } // Divisibled to 32.
 
-    int cspace = data->length() / 32;
-    int chunk_count = cspace;
+    int cspace = data->length() / 32; // Each byte space
+    int chunk_count = cspace; // Chunk count
     string* chunks;
 
     if (cspace % 2 != 0)
-        chunk_count++;
+        chunk_count++; // Extra chunk
 
     chunks = new string[chunk_count];
 
@@ -85,7 +85,7 @@ string Mash::xor_chunks(string chunk1, string chunk2){
     return chunk1;
 }
 
-void Mash::reset_seed(){
+void Mash::rand_seed(){
     time_t secs;
     secs = time(0);
     srand((unsigned int)secs);

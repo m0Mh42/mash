@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
     string filename = argv[1];
     string* data = new string;
     if (data == nullptr){
+        cout << memerr; 
         exit(1);
     }
 
@@ -28,18 +29,31 @@ int main(int argc, char* argv[]) {
     Mash* mash;
     mash = new Mash;
     if (mash == nullptr){
+        cout << memerr; 
         exit(1);
     }
 
     string* output = new string;
     if (output == nullptr){
+        cout << memerr; 
         exit(1);
     }
 
-    mash -> reset_seed();
+    mash -> rand_seed();
+
     macaron::Base64* b64c;
     b64c = new macaron::Base64;
+    if (b64c == nullptr){
+        cout << memerr; 
+        exit(1);
+    }
+
     string* b64 = new string;
+    if (b64 == nullptr){
+        cout << memerr; 
+        exit(1);
+    }
+
     run = true;
 
     signal(SIGINT, IntSig);
