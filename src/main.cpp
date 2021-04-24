@@ -1,8 +1,8 @@
 #include <fstream>
-#include "header.hpp"
+#include "../inc/header.hpp"
 #include "hash.cpp"
 #include "memcheck.cpp"
-#include "base64.hpp"
+#include "../inc/base64.hpp"
 #include "file.cpp"
 #include <cmath>
 
@@ -24,7 +24,6 @@ int main(int argc, char* argv[]) {
     }
 
     int line_c = GetLineLen();
-    cout << line_c << endl;
 
     string* output = new string[line_c + 1];
     if (output == nullptr){

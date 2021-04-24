@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "../inc/header.hpp"
 
 using namespace std;
 
