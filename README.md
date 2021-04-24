@@ -14,3 +14,4 @@ This is my mashing algorithm app. Gets an input (file, or stdin), and outs a mas
  5. Repeats `4` until 1 chunk remains.
  6. Prints.
 
+Maybe using it as proof of work? :)))
