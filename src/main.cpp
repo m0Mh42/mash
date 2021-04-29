@@ -9,6 +9,7 @@
 using namespace std;
 
 static bool run;
+unsigned short int difficulty;
 
 void IntSig(int signum){
     run = false;
@@ -28,7 +29,32 @@ string string_to_hex(const string& input)
     return output;
 }
 
+bool check_output(string data){
+    if (difficulty > 0){
+        for (int i = 0; i < difficulty; i++){
+            if (data[i] != '0'){
+                return false;
+            }
+        }
+        return true;
+    } else {
+        cout << data << endl;
+        usleep(500 * 1000);
+        return false;
+    }
+}
+
 int main(int argc, char* argv[]) {
+
+    if (argc > 2){
+        difficulty = stoi(argv[2]);
+        if (difficulty > 64){
+            cout << "Invalid difficulty" << endl;
+            exit(254);
+        }
+        cout << "Difficulty set to " << difficulty << endl;
+    }
+
     string filename = argv[1];
     string* data = new string;
     if (data == nullptr){
@@ -61,14 +87,20 @@ int main(int argc, char* argv[]) {
 
     signal(SIGINT, IntSig);
 
+    int count = 0;
+
     while (run){
         output = mash -> mash(chunks);
         output = string_to_hex(output);
-        cout << output << endl;
-        usleep(500 * 1000);
+        if(check_output(output)){
+            cout << output << endl;
+            run = false;
+        }
+        count++;
     }
 
-    cout << endl << "Exiting..." << endl;
+    cout << endl << "Count: " << count << endl;
+    cout << "Exiting..." << endl;
 
     delete mash;
     delete[] chunks;
