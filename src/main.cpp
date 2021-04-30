@@ -1,7 +1,7 @@
 #include <fstream>
-#include <cmath>
 #include <unistd.h>
 #include <signal.h>
+#include <cmath>
 #include "../inc/header.hpp"
 #include "mash.cpp"
 #include "file.cpp"
@@ -48,11 +48,15 @@ int main(int argc, char* argv[]) {
 
     if (argc > 2){
         difficulty = stoi(argv[2]);
-        if (difficulty > 64){
+        if (difficulty > 63){
             cout << "Invalid difficulty" << endl;
             exit(254);
         }
         cout << "Difficulty set to " << difficulty << endl;
+        double probability;
+        double x = 64.00 - difficulty;
+        probability = pow(16.00, x) / pow(16.00, 64.00);
+        cout << "Finding Probability: " << probability  << " out of 1 try"<< endl;
     }
 
     string filename = argv[1];
@@ -87,7 +91,7 @@ int main(int argc, char* argv[]) {
 
     signal(SIGINT, IntSig);
 
-    int count = 0;
+    unsigned long long count = 0;
 
     while (run){
         output = mash -> mash(chunks);

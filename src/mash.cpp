@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// TODO
+// 
+
 class Mash {
     public:
         string mash(string* chunks);
@@ -17,9 +20,10 @@ class Mash {
         unsigned char rand_c;
         int cspace;
         int chunk_count;
-        string* prv_chunks;
+        string* prv_chunks; // Private chunks to work at
 };
 
+// Chunking data
 string* Mash::chunkdata(string* input){
     string* data;
     data = new string;
@@ -34,7 +38,7 @@ string* Mash::chunkdata(string* input){
         for (int l = 0; l < len; l++){
             data->push_back((unsigned char) '0' + len);
         }
-    } // Divisibled to 32.
+    } // Divisible to 32.
 
     cspace = data->length() / 32; // Each byte space
     chunk_count = cspace; // Chunk count
@@ -67,6 +71,7 @@ string* Mash::chunkdata(string* input){
     return chunks;
 }
 
+// Mashing
 string Mash::mash(string* chunks){
     for (int i = 0; i < chunk_count; i++){
         *(prv_chunks + i) = *(chunks + i);
@@ -86,32 +91,38 @@ string Mash::mash(string* chunks){
     return *prv_chunks;
 }
 
+// Random character generator.
 void Mash::rand_c_generator(void){
     rand_c = rand();
 }
 
+// Mashing Random
 string Mash::xor_random(string chunk){
     for (int i = 0; i < 32; i++){
         rand_c_generator();
-        chunk[i] = chunk[i] ^ rand_c;
+        chunk[i] ^= VERSION;
+        chunk[i] ^= rand_c;
     }
     return chunk;
 }
 
+// Mashing Chunks
 string Mash::xor_chunks(string chunk1, string chunk2){
     for (int i = 0; i < 32; i++){
-        chunk1[i] = chunk1[i] ^ chunk2[i];
-        chunk1[i] = chunk1[i] ^ chunk2[i];
+        chunk1[i] ^= VERSION;
+        chunk1[i] ^= chunk2[i];
     }
     return chunk1;
 }
 
+// Random Number seeder.
 void Mash::rand_seed(){
     time_t secs;
     secs = time(0);
     srand((unsigned int)secs);
 }
 
+// Returns chunk count.
 int Mash::get_chunk_count(){
     return chunk_count;
 }
