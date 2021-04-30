@@ -11,7 +11,10 @@ run:
 	$(OUTPUT) $(TESTFILE)
 
 difficulty:
-	$(OUTPUT) $(TESTFILE) 10
+	$(OUTPUT) $(TESTFILE) 6
+
+stresstest:
+	$(OUTPUT) $(TESTFILE) 63
 
 dirs:
 	mkdir ./bin

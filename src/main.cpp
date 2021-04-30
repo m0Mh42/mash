@@ -49,6 +49,27 @@ bool check_output(string data){
     }
 }
 
+// Checking difficulty declaration
+void DifficultySet(char* difficultyNum){
+    try {
+        difficulty = stoi(difficultyNum);
+    } catch(...) {
+        // Not Numeric Difficulty
+        cout << "Invalid difficulty. Please insert number as difficulty." << endl;
+        exit(USAGEERR);
+    }
+    if (difficulty > 63){
+        // Difficulty can't be 64, so we cant find a result with all the characters '0'
+        cout << "Invalid difficulty. Difficulty can\'t be more than 63." << endl;
+        exit(INVALIDDIFF);
+    }
+    cout << "Difficulty set to " << difficulty << endl;
+    double probability;
+    double x = 64.00 - difficulty;
+    probability = pow(16.00, x) / pow(16.00, 64.00);
+    cout << "Finding Probability: " << probability  << " out of 1 try"<< endl;
+}
+
 int main(int argc, char* argv[]) {
 
     // Filename is a must
@@ -56,26 +77,10 @@ int main(int argc, char* argv[]) {
         cout << "Usage: " << endl << argv[0] << " [file] [difficulty]" << endl;
         exit(NOFILE);
     }
-
+    
     // Checking difficulty declaration
     if (argc > 2){
-        try {
-            difficulty = stoi(argv[2]);
-        } catch(...) {
-            // Not Numeric Difficulty
-            cout << "Invalid difficulty. Please insert number as difficulty." << endl;
-            exit(USAGEERR);
-        }
-        if (difficulty > 63){
-            // Difficulty can't be 64, so we cant find a result with all the characters '0'
-            cout << "Invalid difficulty. Difficulty can\'t be more than 63." << endl;
-            exit(INVALIDDIFF);
-        }
-        cout << "Difficulty set to " << difficulty << endl;
-        double probability;
-        double x = 64.00 - difficulty;
-        probability = pow(16.00, x) / pow(16.00, 64.00);
-        cout << "Finding Probability: " << probability  << " out of 1 try"<< endl;
+        DifficultySet(argv[2]);
     }
 
     string filename = argv[1];
