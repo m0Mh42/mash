@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "../inc/errcod.hpp"
 
 using namespace std;
 
@@ -10,12 +11,12 @@ string Readfile(const string filename){
     string* buffer = new string;
     if (buffer == nullptr){
         cout << _memerr;
-        exit(1);
+        exit(MEMERR);
     }
     string *line = new string;
     if (line == nullptr){
         cout << _memerr;
-        exit(1);
+        exit(MEMERR);
     }
     file.open(filename, ios::in | ios::binary);
 

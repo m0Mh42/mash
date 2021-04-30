@@ -1,6 +1,7 @@
 #include <random>
 #include <ctime>
 #include "../inc/header.hpp"
+#include "../inc/errcod.hpp"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ string* Mash::chunkdata(string* input){
     data = new string;
     if (data == nullptr){
         cout << memerr;
-        exit(1);
+        exit(MEMERR);
     }
     *data = *input;
 
@@ -51,7 +52,7 @@ string* Mash::chunkdata(string* input){
     prv_chunks = new string[chunk_count];
     if (chunks == nullptr){
         cout << memerr;
-        exit(1);
+        exit(MEMERR);
     }
 
     for (int a = 0; a < cspace; a++){ // Chunk all data
