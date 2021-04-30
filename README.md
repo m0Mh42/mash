@@ -4,7 +4,7 @@
 very gut.
 
 ```shell
-./mash [input file]
+./mash [input file] [difficulty]
 ```
 
 ## Procedure:
@@ -13,6 +13,9 @@ very gut.
  3. XORs each chunk with random characters.
  4. XORs each two chunks with each other and replaces them with result.
  5. Repeats `4` until 1 chunk remains.
- 6. Prints.
+ 6. Converts the chunk to hexadecimal format.
+ 7. If any difficulty declared, checks the chunk if the `difficulty` number of the first characters are '0' or not.
+ 8. If so, prints the chunk and exits, otherwise the program continues.
+ 9. If no difficulty declared, it just prints the chunk and repeats the process from instruction #3.
 
 Maybe using it as proof of work? :)))
