@@ -2,11 +2,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <cmath>
+#include <chrono>
 #include "../inc/header.hpp"
 #include "mash.cpp"
 #include "file.cpp"
 
 using namespace std;
+using namespace chrono;
 
 static bool run;
 unsigned short int difficulty;
@@ -93,17 +95,24 @@ int main(int argc, char* argv[]) {
 
     unsigned long long count = 0;
 
+    double microsecs = 0;
+
     while (run){
+        auto t1 = high_resolution_clock::now();
         output = mash -> mash(chunks);
+        auto t2 = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(t2 - t1);
+        microsecs += duration.count();
         output = string_to_hex(output);
         if(check_output(output)){
-            cout << output << endl;
+            cout << endl << output << endl;
             run = false;
         }
         count++;
     }
 
-    cout << endl << "Count: " << count << endl;
+    cout << endl << "Duration: " << (microsecs / 1000) << "ms" << endl;
+    cout << "Count: " << count << endl;
     cout << "Exiting..." << endl;
 
     delete mash;

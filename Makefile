@@ -1,17 +1,17 @@
 FILES=./src/main.cpp
-FLAGS=-lstdc++ -lm -Wall -Wextra -g -O4
+FLAGS=-lm -Wall -Wextra -g -O4
 
 OUTPUT=./bin/mash
 TESTFILE=./bin/testfile
 
 all:
-	gcc $(FILES) $(FLAGS) -o $(OUTPUT)
+	g++ $(FILES) $(FLAGS) -o $(OUTPUT)
 
 run:
 	$(OUTPUT) $(TESTFILE)
 
 difficulty:
-	$(OUTPUT) $(TESTFILE) 6
+	$(OUTPUT) $(TESTFILE) 10
 
 dirs:
 	mkdir ./bin
