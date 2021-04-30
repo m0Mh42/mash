@@ -4,7 +4,6 @@
 #include <cmath>
 #include <chrono>
 #include "../inc/header.hpp"
-#include "../inc/errcod.hpp"
 #include "mash.cpp"
 #include "file.cpp"
 
@@ -55,15 +54,21 @@ int main(int argc, char* argv[]) {
     // Filename is a must
     if (argc < 2){
         cout << "Usage: " << endl << argv[0] << " [file] [difficulty]" << endl;
-        exit(USAGEERR);
+        exit(NOFILE);
     }
 
     // Checking difficulty declaration
     if (argc > 2){
-        difficulty = stoi(argv[2]);
+        try {
+            difficulty = stoi(argv[2]);
+        } catch(...) {
+            // Not Numeric Difficulty
+            cout << "Invalid difficulty. Please insert number as difficulty." << endl;
+            exit(USAGEERR);
+        }
         if (difficulty > 63){
             // Difficulty can't be 64, so we cant find a result with all the characters '0'
-            cout << "Invalid difficulty" << endl;
+            cout << "Invalid difficulty. Difficulty can\'t be more than 63." << endl;
             exit(INVALIDDIFF);
         }
         cout << "Difficulty set to " << difficulty << endl;
