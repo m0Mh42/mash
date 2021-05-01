@@ -1,31 +1,49 @@
 #include <iostream>
-#include <fstream>
+#include <string>
+#include "file.h"
 
 using namespace std;
 
-string Readfile(const string filename){
-    ifstream file;
-    const string _memerr = "Memory Error\n";
-    string* buffer = new string;
-    if (buffer == nullptr){
-        cout << _memerr;
-        exit(1);
+void File::open_file(string filename){
+    if(file.is_open()){
+        file.close();
     }
-    string *line = new string;
-    if (line == nullptr){
-        cout << _memerr;
-        exit(1);
+    if (file.is_open() == false){
+        file.open(filename, ios::binary);
+        cout << "Opened " << filename << endl;
     }
-    file.open(filename, ios::in | ios::binary);
-
-    if (file.is_open()){
-        while(getline(file, *line)){
-            buffer->append(*line);
-            buffer->push_back('\n');
-        }
-    }
-
-    return *buffer;
-    
 }
 
+void File::close_file(){
+    if(file.is_open()){
+        file.close();
+        is_eof = false;
+        cout << "Closed file" << endl;
+    }
+}
+
+// Chunks are 32 bytes.
+string File::read_chunk() {
+    i = 0;
+    chunk = "";
+    char chr;
+    if (file.is_open()){
+        while (i < 32){
+            if(!is_eof && file.get(chr)){
+                chunk.push_back(chr);
+                i++;
+            } else {
+                is_eof = true;
+                return chunk;
+            }
+        }
+    }
+    return chunk;
+}
+
+u_long File::get_file_length(){
+    file.seekg(0, ios::end);
+    len = file.tellg();
+    file.seekg(0, ios::beg);
+    return len;
+}

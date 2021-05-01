@@ -1,4 +1,4 @@
-FILES=./src/main.cpp
+FILES=./src/main.cpp ./src/mash.cpp ./src/file.cpp
 FLAGS=-lm -Wall -Wextra -g -O4
 
 OUTPUT=./bin/mash
@@ -11,7 +11,7 @@ run:
 	$(OUTPUT) $(TESTFILE)
 
 difficulty:
-	$(OUTPUT) $(TESTFILE) 6
+	$(OUTPUT) $(TESTFILE) 10
 
 stresstest:
 	$(OUTPUT) $(TESTFILE) 63

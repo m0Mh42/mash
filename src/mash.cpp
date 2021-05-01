@@ -1,28 +1,9 @@
-#include <random>
-#include <ctime>
-#include "../inc/header.hpp"
-#include "../inc/errcod.hpp"
+#include <iostream>
+#include "mash.h"
+#include "errcod.hpp"
+#include "version.h"
 
-using namespace std;
-
-// TODO
-// 
-
-class Mash {
-    public:
-        string mash(string* chunks);
-        string* chunkdata(string* input);
-        void rand_seed();
-        int get_chunk_count();
-    private:
-        void rand_c_generator(void);
-        string xor_chunks(string chunk1, string chunk2);
-        string xor_random(string chunk);
-        unsigned char rand_c;
-        int cspace;
-        int chunk_count;
-        string* prv_chunks; // Private chunks to work at
-};
+#define memerr "Memory Error.\n"
 
 // Chunking data
 string* Mash::chunkdata(string* input){
@@ -73,23 +54,15 @@ string* Mash::chunkdata(string* input){
 }
 
 // Mashing
-string Mash::mash(string* chunks){
-    for (int i = 0; i < chunk_count; i++){
-        *(prv_chunks + i) = *(chunks + i);
+MashNode Mash::mash(MashNode node){
+    // Random Mash
+    xor_random(node);
+    
+    // Mashing each character round
+    for (uint i = 0; i < 16; i++){
+        node.value[i] = node.value[i] ^ node.value[32 - i - 1];
     }
-
-    for (int c = 0; c < chunk_count; c++){ // Initial Random Mash
-        *(prv_chunks + c) = xor_random(*(prv_chunks + c));
-    }
-
-    while (chunk_count != 1){ // Mashing each chunk with other.
-        for (int i = 0; i < chunk_count / 2; i++){
-            *(prv_chunks + i) = xor_chunks(*(prv_chunks + (i * 2)), *(prv_chunks + ((i * 2) + 1)));
-        }
-        chunk_count /= 2;
-    }
-
-    return *prv_chunks;
+    return node;
 }
 
 // Random character generator.
@@ -98,22 +71,22 @@ void Mash::rand_c_generator(void){
 }
 
 // Mashing Random
-string Mash::xor_random(string chunk){
+MashNode Mash::xor_random(MashNode& node){
     for (int i = 0; i < 32; i++){
         rand_c_generator();
-        chunk[i] ^= VERSION;
-        chunk[i] ^= rand_c;
+        node.value[i] ^= VERSION;
+        node.value[i] ^= rand_c;
     }
-    return chunk;
+    return node;
 }
 
 // Mashing Chunks
-string Mash::xor_chunks(string chunk1, string chunk2){
+MashNode Mash::xor_chunks(MashNode& node1, MashNode& node2){
     for (int i = 0; i < 32; i++){
-        chunk1[i] ^= VERSION;
-        chunk1[i] ^= chunk2[i];
+        node1.value[i] ^= VERSION;
+        node1.value[i] ^= node2.value[i];
     }
-    return chunk1;
+    return node1;
 }
 
 // Random Number seeder.
@@ -126,4 +99,72 @@ void Mash::rand_seed(){
 // Returns chunk count.
 int Mash::get_chunk_count(){
     return chunk_count;
+}
+
+Mashtree::Mashtree(uint chunksize){
+    init_mashtree(chunksize);
+}
+
+void Mashtree::init_mashtree(uint chunksize){
+    nodetree = new MashNode[chunksize];
+    tree_size = 0;
+    k = 0;
+}
+
+bool Mashtree::add_node(const string& value){
+    MashNode node;
+    node.key = 0;
+    node.value = value;
+    node.occupied = true;
+    for (uint i = 0; i <= tree_size; i++){
+        if ((nodetree + i)->occupied == false){
+            *(nodetree + i) = node;
+            tree_size++;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Mashtree::mash_k_matching_nodes(){
+    for (uint i = 0; i < tree_size; i++){
+        for (uint n = 0; n < tree_size; n++){
+            if (i == n)
+                continue;
+            if ((nodetree + i)->occupied && (nodetree + n)->occupied){
+                if ((nodetree + i)->key == (nodetree + n)->key){
+                    mash.xor_random(*(nodetree + i));
+                    mash.xor_random(*(nodetree + n));
+                    mash.xor_chunks(*(nodetree + i), *(nodetree + n));
+                    (nodetree + i)->key += 1;
+                    (nodetree + n)->occupied = false;
+                    tree_size--;
+                    i = 0;
+                    n = 0;
+                }
+            }
+        }
+    }
+}
+
+void Mashtree::mash_remaining() {
+    for (uint i = 0; i < tree_size; i++){
+        for (uint n = 0; n < tree_size; n++){
+            if (i == n)
+                continue;
+            if ((nodetree + i)->occupied && (nodetree + n)->occupied){
+                mash.xor_random(*(nodetree + i));
+                mash.xor_random(*(nodetree + n));
+                mash.xor_chunks(*(nodetree + i), *(nodetree + n));
+                (nodetree + i)->key += 1;
+                (nodetree + n)->occupied = false;
+                i = 0;
+                n = 0;
+            }
+        }
+    }
+}
+
+MashNode Mashtree::return_result(){
+    return *(nodetree);
 }
