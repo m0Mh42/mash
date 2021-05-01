@@ -138,7 +138,6 @@ void Mashtree::mash_k_matching_nodes(){
                     mash.xor_chunks(*(nodetree + i), *(nodetree + n));
                     (nodetree + i)->key += 1;
                     (nodetree + n)->occupied = false;
-                    tree_size--;
                     i = 0;
                     n = 0;
                 }

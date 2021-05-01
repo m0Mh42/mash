@@ -1,21 +1,22 @@
 # Mash
 
-### 256-bit Mashing Algorithm.
+#### 256-bit Mashing Algorithm.
 very gut.
 
 ```shell
 ./mash [input file] [difficulty]
 ```
 
-## Procedure:
- 1. Reads the file.
- 2. Creates chunks of 32 bytes of it.
- 3. XORs each chunk with random characters.
- 4. XORs each two chunks with each other and replaces them with result.
- 5. Repeats `4` until 1 chunk remains.
- 6. Converts the chunk to hexadecimal format.
- 7. If any difficulty declared, checks the chunk if the `difficulty` number of the first characters are '0' or not.
- 8. If so, prints the chunk and exits, otherwise the program continues.
- 9. If no difficulty declared, it just prints the chunk and repeats the process from instruction #3.
+## Mashing Procedure:
+    <span>
+    1.1 Reads 64 bytes of the file.
+    1.2 Splits it into 2 32-byte chunk.
+    1.3 Adds them to Mashtree with key=0.
+    1.4 Checks the whole tree for chunks with same keys, removes them from the tree, mashes them with each other, adds the mashed chunk to the tree with key + 1.
+    2. Repeat step `1` until no chunk with identical keys remain.
+    2.1 Then, mashes chunk 0 with all the other remaining chunks, no key testing.
+    3. Then the program mashes the chunk 0 with random characters, and then with itself.
+    4. If difficulty was given, it checks the mashed chunk with the difficulty, otherwise continues mashing.
+    </ span>
 
 Maybe using it as proof of work? :)))

@@ -88,8 +88,6 @@ int main(int argc, char* argv[]) {
 
     string filename = argv[1];
     
-    // New read and chunking method goes here.
-
     // File object
     File file;
     file.open_file(filename);
