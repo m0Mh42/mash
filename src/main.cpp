@@ -11,13 +11,14 @@
 #define memerr "Memory Error\n"
 
 using namespace std;
-using namespace chrono; // namespace of time measurement
+using namespace chrono; // Time measurement
 
 static bool run;
-unsigned short int difficulty;
+uint8_t difficulty;
 
 // Ctrl-C
-void intsig(int signum){
+void intsig(int sig){
+    cout << "Signal " << sig << endl;
     run = false;
 }
 
@@ -40,13 +41,16 @@ string string_to_hex(const string& input)
 void check_output(string data){
     if (difficulty > 0){
         for (int i = 0; i < difficulty; i++){
+            // If the first characters defined by `difficulty` aren't '0', then we return, as it is false.
             if (data[i] != '0'){
                 return;
             }
         }
+        // Otherwise, it's the mash we were looking for and we print it, also stop running.
         cout << data << endl;
         run = false;
     } else {
+        // There's no difficulty defined, printing the mash and sleeping.
         cout << data << endl;
         usleep(500 * 1000);
     }
@@ -69,8 +73,9 @@ void difficulty_set(char* difficulty_num){
     cout << "Difficulty set to " << difficulty << endl;
     double probability;
     double x = 64.00 - difficulty;
+    // The probability to find the mash we look for.
     probability = pow(16.00, x) / pow(16.00, 64.00);
-    cout << "Finding Probability: " << probability  << " out of 1 try"<< endl;
+    cout << "Finding Probability: " << probability << endl;
 }
 
 int main(int argc, char* argv[]) {
@@ -126,23 +131,28 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // we don't need the file anymore, so we close it.
     file.close_file();
 
+    // We get the resulted mash node, so we can mash it again, without using the nodetree.
     MashNode mashnode = mashtree.return_result();
+
+    // And then we delete the nodetree to free memory.
+    mashtree.delete_nodetree();
 
     // cout << endl << "Size of mashnode: " << sizeof(MashNode) << endl;
     // cout << "Size of mashtree: " << (sizeof(MashNode) * (chunksize)) << endl;
     // cout << "Size of mash class: " << sizeof(Mash) << endl;
     // cout << "Size of Mashtree class: " << sizeof(Mashtree) << endl;
 
+    // Some initializations
     double microsecs = 0;
     run = true;
     string out;
     u_long count = 0;
 
     while (run) {
-        // measuring time taken to mash
-
+        // Measuring time taken to mash
         auto t1 = high_resolution_clock::now();
 
         mashnode = mash.mash(mashnode);

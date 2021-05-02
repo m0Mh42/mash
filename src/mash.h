@@ -15,8 +15,8 @@ class Mash {
         string* chunkdata(string* input);
         void rand_seed();
         int get_chunk_count();
-        MashNode xor_random(MashNode& node);
-        MashNode xor_chunks(MashNode& node1, MashNode& node2);
+        void xor_random(MashNode& node);
+        void xor_chunks(MashNode& node1, MashNode& node2);
     private:
         void rand_c_generator(void);
         u_char rand_c;

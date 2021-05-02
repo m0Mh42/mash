@@ -6,6 +6,7 @@
 #define memerr "Memory Error.\n"
 
 // Chunking data
+// Really maybe unused.
 string* Mash::chunkdata(string* input){
     string* data;
     data = new string;
@@ -71,28 +72,26 @@ void Mash::rand_c_generator(void){
 }
 
 // Mashing Random
-MashNode Mash::xor_random(MashNode& node){
+void Mash::xor_random(MashNode& node){
     for (int i = 0; i < 32; i++){
         rand_c_generator();
         node.value[i] ^= VERSION;
         node.value[i] ^= rand_c;
     }
-    return node;
 }
 
 // Mashing Chunks
-MashNode Mash::xor_chunks(MashNode& node1, MashNode& node2){
+void Mash::xor_chunks(MashNode& node1, MashNode& node2){
     for (int i = 0; i < 32; i++){
         node1.value[i] ^= VERSION;
         node1.value[i] ^= node2.value[i];
     }
-    return node1;
 }
 
 // Random Number seeder.
 void Mash::rand_seed(){
     time_t secs;
-    secs = time(0);
+    secs = time(0); // Generating random seed using time in seconds passed from the 1970
     srand((unsigned int)secs);
 }
 
@@ -101,10 +100,12 @@ int Mash::get_chunk_count(){
     return chunk_count;
 }
 
+// Initialize Mashtree class
 Mashtree::Mashtree(uint chunksize){
     init_mashtree(chunksize);
 }
 
+// Initialization function
 void Mashtree::init_mashtree(uint chunksize){
     nodetree = new MashNode[chunksize];
     if (nodetree == nullptr){
@@ -115,6 +116,7 @@ void Mashtree::init_mashtree(uint chunksize){
     k = 0;
 }
 
+// Adding new nodes with key=0
 bool Mashtree::add_node(const string& value){
     MashNode node;
     node.key = 0;
@@ -130,32 +132,14 @@ bool Mashtree::add_node(const string& value){
     return false;
 }
 
+// Searching for key matching nodes and mashing them together
 void Mashtree::mash_k_matching_nodes(){
     for (uint i = 0; i < tree_size; i++){
-        for (uint n = 0; n < tree_size; n++){
-            if (i == n)
-                continue;
-            if ((nodetree + i)->occupied && (nodetree + n)->occupied){
-                if ((nodetree + i)->key == (nodetree + n)->key){
-                    mash.xor_random(*(nodetree + i));
-                    mash.xor_random(*(nodetree + n));
-                    mash.xor_chunks(*(nodetree + i), *(nodetree + n));
-                    (nodetree + i)->key += 1;
-                    (nodetree + n)->occupied = false;
-                    i = 0;
-                    n = 0;
-                }
-            }
-        }
-    }
-}
-
-void Mashtree::mash_remaining() {
-    for (uint i = 0; i < tree_size; i++){
-        for (uint n = 0; n < tree_size; n++){
-            if (i == n)
-                continue;
-            if ((nodetree + i)->occupied && (nodetree + n)->occupied){
+    for (uint n = 0; n < tree_size; n++){
+        if (i == n)
+            continue;
+        if ((nodetree + i)->occupied && (nodetree + n)->occupied){
+            if ((nodetree + i)->key == (nodetree + n)->key){
                 mash.xor_random(*(nodetree + i));
                 mash.xor_random(*(nodetree + n));
                 mash.xor_chunks(*(nodetree + i), *(nodetree + n));
@@ -166,12 +150,34 @@ void Mashtree::mash_remaining() {
             }
         }
     }
+    }
 }
 
+// Mashing the remaining nodes with not-similar keys.
+void Mashtree::mash_remaining() {
+    for (uint i = 0; i < tree_size; i++){
+    for (uint n = 0; n < tree_size; n++){
+        if (i == n)
+            continue;
+        if ((nodetree + i)->occupied && (nodetree + n)->occupied){
+            mash.xor_random(*(nodetree + i));
+            mash.xor_random(*(nodetree + n));
+            mash.xor_chunks(*(nodetree + i), *(nodetree + n));
+            (nodetree + i)->key += 1;
+            (nodetree + n)->occupied = false;
+            i = 0;
+            n = 0;
+        }
+    }
+    }
+}
+
+// Returns the result
 MashNode Mashtree::return_result(){
     return *(nodetree);
 }
 
+// Deletes nodetree, freeing memory.
 void Mashtree::delete_nodetree(){
     delete[] nodetree;
 }
