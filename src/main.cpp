@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
     unsigned long chunksize = len / 32;
 
     // Mashtree Object
-    Mashtree mashtree(chunksize + 2);
+    Mashtree mashtree(chunksize);
     string chunk = "";
     file.is_eof = false;
 
@@ -126,12 +126,19 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    file.close_file();
+
     MashNode mashnode = mashtree.return_result();
+
+    // cout << endl << "Size of mashnode: " << sizeof(MashNode) << endl;
+    // cout << "Size of mashtree: " << (sizeof(MashNode) * (chunksize)) << endl;
+    // cout << "Size of mash class: " << sizeof(Mash) << endl;
+    // cout << "Size of Mashtree class: " << sizeof(Mashtree) << endl;
 
     double microsecs = 0;
     run = true;
     string out;
-    u_long count;
+    u_long count = 0;
 
     while (run) {
         // measuring time taken to mash
@@ -150,7 +157,7 @@ int main(int argc, char* argv[]) {
         count++;
     }
 
-    cout << endl << "Duration: " << (microsecs / 1000) << "ms" << endl;
+    cout << endl << "Time taken by Mashing: " << (microsecs / 1000) << "ms" << endl;
     cout << "Count: " << count << endl;
     cout << "Exiting..." << endl;
 

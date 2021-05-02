@@ -10,7 +10,6 @@ void File::open_file(string filename){
     }
     if (file.is_open() == false){
         file.open(filename, ios::binary);
-        cout << "Opened " << filename << endl;
     }
 }
 
@@ -18,7 +17,6 @@ void File::close_file(){
     if(file.is_open()){
         file.close();
         is_eof = false;
-        cout << "Closed file" << endl;
     }
 }
 
@@ -34,8 +32,16 @@ string File::read_chunk() {
                 i++;
             } else {
                 is_eof = true;
-                return chunk;
+                break;
             }
+        }
+    }
+    if (chunk.length() < 32){
+        u_char chr;
+        uint8_t len = 32 - chunk.length();
+        for (uint8_t i = 0; i < len; i++){
+            chr = '0' + len;
+            chunk.push_back(chr);
         }
     }
     return chunk;

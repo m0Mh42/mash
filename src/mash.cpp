@@ -107,6 +107,10 @@ Mashtree::Mashtree(uint chunksize){
 
 void Mashtree::init_mashtree(uint chunksize){
     nodetree = new MashNode[chunksize];
+    if (nodetree == nullptr){
+        cout << memerr;
+        exit(MEMERR);
+    }
     tree_size = 0;
     k = 0;
 }
@@ -166,4 +170,8 @@ void Mashtree::mash_remaining() {
 
 MashNode Mashtree::return_result(){
     return *(nodetree);
+}
+
+void Mashtree::delete_nodetree(){
+    delete[] nodetree;
 }

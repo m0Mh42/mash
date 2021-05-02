@@ -33,6 +33,7 @@ class Mashtree {
         void mash_k_matching_nodes();
         void mash_remaining();
         MashNode return_result();
+        void delete_nodetree();
         uint tree_size;
     private:
         uint k;
